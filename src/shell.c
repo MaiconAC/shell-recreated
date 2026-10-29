@@ -1,4 +1,5 @@
 #include "../headers/shell.h"
+#include "../headers/builtin-commands.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -20,7 +21,7 @@ void execution_loop()
 		printf("> ");
 		line = read_line();
 		args = parse_line(line);
-		status = execute_program(args);
+		status = execute_shell(args);
 
 		free(line);
 		free(args);
@@ -109,14 +110,26 @@ char **parse_line(char *line)
 	return tokens;
 }
 
+int execute_shell(char **args) {
+	// empty command
+	if (args[0] == NULL) return 1;
+
+	int response = check_builtin_commands(args);
+
+	// response -1 means that the user didnt used any builtin command
+	if (response != -1) {
+		return response;
+	}
+
+	return run_program(args);
+
+}
+
 // to init a program it is necessary to create a new process with
 // the fork syscall, it returns 2 times, one for the child and one for
 // the parent becuse it duplicates the context, so both processes will
 // continue from this point, that's why it is used only one if-else
-int execute_program(char **args) {
-	// empty command
-	if (args[0] == NULL) return 1;
-
+int run_program(char **args) {
 	pid_t pid;
 	int status;
 
