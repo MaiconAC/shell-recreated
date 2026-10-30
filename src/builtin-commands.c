@@ -36,6 +36,8 @@ int cd_command(char **args) {
 
 // if returns 0 the program loop finishes
 int exit_command(char **args) {
+	// cast to void to remove unused warning
+	(void) args;
 	return 0;
 }
 

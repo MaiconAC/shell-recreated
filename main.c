@@ -1,7 +1,7 @@
 #include "headers/shell.h"
 #include <stdio.h>
 
-int main(int argc, char **argv)
+int main(/* int argc, char **argv */void)
 {
 	// TODO load config files
 	
