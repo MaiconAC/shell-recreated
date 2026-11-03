@@ -10,5 +10,4 @@ char **parse_line(char *line);
 int execute_shell(char **args);
 int run_program(char **args);
 
-void buffer_allocation_error();
 void exit_child_process();

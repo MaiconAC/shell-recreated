@@ -1,5 +1,7 @@
 #include "../headers/shell.h"
 #include "../headers/builtin-commands.h"
+#include "../headers/history.h"
+#include "../headers/utils.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -20,12 +22,15 @@ void execution_loop()
 	do {
 		printf("> ");
 		line = read_line();
+		add_to_history(line);
 		args = parse_line(line);
 		status = execute_shell(args);
 
 		free(line);
 		free(args);
 	} while (status);
+
+	free_history_buffer();
 }
 
 // We dont know the size of the input, so we allocate
@@ -159,12 +164,6 @@ int run_program(char **args) {
 	}
 
 	return 1;
-}
-
-void buffer_allocation_error()
-{
-	fprintf(stderr, "Buffer allocation error");
-	exit(EXIT_FAILURE);
 }
 
 void exit_child_process()

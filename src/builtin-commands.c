@@ -1,16 +1,19 @@
 #include "../headers/builtin-commands.h"
+#include "../headers/history.h"
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
 
-char *builtin_commands_strings[2] = {
+char *builtin_commands_strings[] = {
 	"cd",
-	"exit"
+	"exit",
+	"history"
 };
 
 builtin_command builtin_commands[] = {
 	&cd_command,
 	&exit_command,
+	&history_command,
 };
 
 // calculate the number of builtin commands available
@@ -39,6 +42,13 @@ int exit_command(char **args) {
 	// cast to void to remove unused warning
 	(void) args;
 	return 0;
+}
+
+int history_command(char **args) {
+	// cast to void to remove unused warning
+	(void) args;
+	print_history();
+	return 1;
 }
 
 // uses a dispatch table to run the correct function
