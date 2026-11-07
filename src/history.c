@@ -36,8 +36,8 @@ void add_to_history(char *command) {
 		buffer_allocation_error();
 	}
 
-	history_offset = history_length; 
 	history_length++;
+	history_offset = history_length; 
 }
 
 void print_history() {
@@ -54,6 +54,46 @@ void free_history_buffer() {
 	free(history);
 }
 
-void decrease_offset();
-void increase_offset();
+// navigate backwards on hist
+// - initial offset is always the same as hist_length
+// - if offset is 0, cannot move backwards
+// - clear the line, print command, add to buffer and increase
+// 		buffer index
+void decrease_offset(char *buffer, int *buffer_index) {
+	if (history_length != 0 && history_offset > 0) {
+		printf("\33[2K\r"); // erase line
+
+		history_offset--;
+
+		char * command = history[history_offset];
+
+		printf("> %s", command);
+		strcpy(buffer, command);
+		*buffer_index = strlen(command);
+	}
+};
+
+// navigate forwards on hist
+// - initial offset is always the same as hist_length
+// - if offset is the same as hist_length, cannot move forward
+// - clear the line, print command, add to buffer and increase
+// 		buffer index
+void increase_offset(char *buffer, int *buffer_index) {
+	if (history_length != 0 && history_offset < history_length) {
+		printf("\33[2K\r"); // erase line
+
+		history_offset++;
+
+		char *command = history[history_offset];
+
+		// same offset and hist_length = current command
+		if (history_offset == history_length) {
+			command = "";	
+		}
+
+		printf("> %s", command);
+		strcpy(buffer, command);
+		*buffer_index = strlen(command);
+	}
+}
 

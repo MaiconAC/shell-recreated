@@ -2,6 +2,7 @@
 #include "../headers/builtin-commands.h"
 #include "../headers/history.h"
 #include "../headers/utils.h"
+#include "../headers/shell_termios.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -50,16 +51,39 @@ char *read_line()
 
 	while (1) {
 		// The character is stored as an int to include EOF value
+		init_termios();
 		character = getchar();
+		reset_termios();
 
 		// If user hit enter, put a null character and return the line
 		// else add character to buffer and increase size counter;
 		if (character == EOF || character == '\n') {
 			buffer[index] = '\0';
+			printf("\n");
 			return buffer;
+	
+		// if the user selects an arrow (up/down), move on history
+		} else if (character == '\033') {
+			init_termios();
+			getchar();
+			character = getchar();
+			reset_termios();
+
+			switch (character) {
+				case 'A':
+					decrease_offset(buffer, &index);
+					break;
+				case 'B':
+					increase_offset(buffer, &index);
+					break;
+				default:
+					continue;
+			}
+
 		} else {
 			buffer[index] = character;
 			index++;
+			printf("%c", character);
 		}
 
 		// Check if needs to reallocate buffer
