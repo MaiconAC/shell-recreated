@@ -1,4 +1,4 @@
-#include "../headers/shell_termios.h"
+#include "../headers/termios_config.h"
 #include <termios.h>
 
 static struct termios old, current;

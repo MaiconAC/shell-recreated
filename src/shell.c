@@ -2,7 +2,7 @@
 #include "../headers/builtin-commands.h"
 #include "../headers/history.h"
 #include "../headers/utils.h"
-#include "../headers/shell_termios.h"
+#include "../headers/termios_config.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -61,7 +61,17 @@ char *read_line()
 			buffer[index] = '\0';
 			printf("\n");
 			return buffer;
-	
+
+		// Recreate backspace, replace buffer character with null and replace
+		// print with \b \b -> return, put space and return again, so the next
+		// char will replace the space
+		} else if (character == 8 || character == 127) {
+			if (index > 0) {
+				buffer[index] = '\0';	
+				index--;
+				printf("\b \b");
+			}
+
 		// if the user selects an arrow (up/down), move on history
 		} else if (character == '\033') {
 			init_termios();
